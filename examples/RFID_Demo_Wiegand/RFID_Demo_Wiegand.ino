@@ -5,6 +5,10 @@
 // will optimize the SoftwareSerial away
 
 // Configure the Library in Wiegand Mode
+// DATA0 of the RFID Reader must be connected 
+// to Pin 2 of the Arduino (INT0)
+// DATA1 of the RFID Reader must be connected
+// To Pin 3 of the Arduino (INT1)
 SeeedRFIDLib RFID(WIEGAND_26BIT); 
 RFIDTag tag;
 
