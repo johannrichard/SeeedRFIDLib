@@ -1,0 +1,18 @@
+#######################################
+# Syntax Coloring Map for SeeedRFIDLib
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SeeedRFIDLib	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+readId  KEYWORD2
+isIdAvailable   KEYWORD2
+hex2dec KEYWORD2
+RFIDTag KEYWORD2
