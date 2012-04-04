@@ -2,6 +2,8 @@
  * Definitions and methods for RFID tag scanning and 
  * the whole shebang of getting the tags out of the reader
  * (c) 2011, 2012 Johann Richard
+ * Licensed under the MIT license
+ * http://www.opensource.org/licenses/mit-license.php.
  */
 #ifndef SeeedRFIDLib_h
 #define SeeedRFIDLib_h
@@ -15,11 +17,11 @@
  * Struct for storing an RFID tag
  */
 struct RFIDTag {
-	int mfr;        // Manufacturer (?) Code (2 bytes)
+	int mfr;         // Manufacturer (?) Code (2 bytes), only useful in UART Mode
 	long id;         // Tag ID (3 bytes)
-	byte chk;        // Checksum (1 byte)
-	boolean valid;   // Validity of the Tag
-	char raw[13];    // The whole tag as a raw string
+	byte chk;        // Checksum (1 byte), only useful in UART Mode
+	boolean valid;   // Validity of the Tag, based on the Checksum (UART Mode) or the parity bits (Wiegand Mode)
+	char raw[13];    // The whole tag as a raw string, only useful in UART Mode
 };
 
 enum RFIDLibType {

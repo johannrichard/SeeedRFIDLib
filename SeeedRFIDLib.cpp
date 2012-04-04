@@ -2,6 +2,8 @@
  * Implementation of a number of methods
  * and functions for RFID Tags from SeeedStudio
  * (c) 2011, 2012 Johann Richard
+ * Licensed under the MIT license
+ * http://www.opensource.org/licenses/mit-license.php. 
  ****/
 #include <SoftwareSerial.h>
 #include "SeeedRFIDLib.h"
