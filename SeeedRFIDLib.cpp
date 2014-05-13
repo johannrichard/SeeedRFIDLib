@@ -129,6 +129,37 @@ RFIDTag SeeedRFIDLib::readId() {
 	return _tag;
 }
 
+void
+SeeedRFIDLib::restart()
+{
+  switch (_libType) {
+#ifdef HAVE_RFID_UART
+  case RFID_UART:
+    _rfidIO->end();
+    delay(2);
+    _rfidIO->begin(9600);
+    _rfidIO->flush();
+
+    // Reset the message and other values
+    _tag.mfr = 0;
+    _tag.id = 0;
+    _tag.chk = 0;
+    _tag.valid = false;
+
+    _idAvailable = false;
+    _bytesRead = 0;
+    for (size_t i = 0; i < sizeof(_tag.raw); ++i)  _tag.raw[i] = 0;
+
+    break;
+#endif
+#ifdef HAVE_RFID_WIEGAND
+  case RFID_WIEGAND:
+    resetWiegand();
+    break;
+#endif
+  }
+}
+
 // Read data, check whether a complete ID has been 
 // read and return true if the ID can be read out
 boolean SeeedRFIDLib::isIdAvailable() { 

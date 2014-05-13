@@ -11,7 +11,7 @@
 // #define DEBUG true // Use this if you want to debug your RFID stuff
 
 #define HAVE_RFID_UART
-#define HAVE_RFID_WIEGAND
+// define HAVE_RFID_WIEGAND
 
 #if ! defined(HAVE_RFID_UART) && ! defined(HAVE_RFID_WIEGAND)
 #  error No RFID driver has been enabled, set HAVE_RFID_UART or HAVE_RFID_WIEGAND
@@ -86,6 +86,7 @@ public:
 #endif
     boolean isIdAvailable();
     RFIDTag readId();
+    void    restart();
 #ifdef HAVE_RFID_UART
     static long hex2dec(String hexCode);
 #endif
