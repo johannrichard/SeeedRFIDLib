@@ -9,9 +9,12 @@
 #include "SeeedRFIDLib.h"
 #include "Arduino.h"
 
+#ifdef HAVE_RFID_WIEGAND
 volatile unsigned char SeeedRFIDLib::_databits[100];    // stores all of the data bits
 volatile unsigned char SeeedRFIDLib::_bitCount;
+#endif
 
+#ifdef HAVE_RFID_UART
 // Initialise an UART Instance of the Library
 SeeedRFIDLib::SeeedRFIDLib(int txPin, int rxPin) {
     _rfidIO = new SoftwareSerial(rxPin, txPin);
@@ -27,7 +30,9 @@ SeeedRFIDLib::SeeedRFIDLib(int txPin, int rxPin) {
     _bytesRead = 0;
     _libType = RFID_UART;
 }
+#endif
 
+#ifdef HAVE_RFID_WIEGAND
 // Initialize a Wiegand Interface
 // This can only be used on PIN 2 (D0) & 3 (D1) 
 // INT 0 and 1, respectively
@@ -50,26 +55,7 @@ SeeedRFIDLib::SeeedRFIDLib(int dataLen) {
     attachInterrupt(1, DATA1, FALLING);
 }
 
-// Returns the ID as a struct and sets the _idAvailable to "false"
-RFIDTag SeeedRFIDLib::readId() {
-	_idAvailable = false;
-	resetWiegand();
-	
-#ifdef DEBUG
-	Serial.println("readId()");
-	Serial.println(_tag.raw);
-	Serial.print("  MFR:\t");
-	Serial.println(_tag.mfr,HEX);
-	Serial.print("  ID:\t");
-	Serial.println(_tag.id,HEX);
-	Serial.print("  CHK:\t");
-	Serial.println(_tag.chk,HEX);
-#endif
-	return _tag;
-}
-
 // Clears the interrupts. From https://github.com/aszymanik/Arduino-Wiegand-Interface/
-
 void SeeedRFIDLib::resetWiegand() {
     // cleanup and get ready for the next card
     _bitCount = 0;
@@ -121,23 +107,49 @@ boolean SeeedRFIDLib::checkParity26() {
         return false;
       }
 }
+#endif
+
+// Returns the ID as a struct and sets the _idAvailable to "false"
+RFIDTag SeeedRFIDLib::readId() {
+	_idAvailable = false;
+#ifdef HAVE_RFID_WIEGAND
+	resetWiegand();
+#endif
+	
+#ifdef DEBUG
+	Serial.println("readId()");
+	Serial.println(_tag.raw);
+	Serial.print("  MFR:\t");
+	Serial.println(_tag.mfr,HEX);
+	Serial.print("  ID:\t");
+	Serial.println(_tag.id,HEX);
+	Serial.print("  CHK:\t");
+	Serial.println(_tag.chk,HEX);
+#endif
+	return _tag;
+}
 
 // Read data, check whether a complete ID has been 
 // read and return true if the ID can be read out
 boolean SeeedRFIDLib::isIdAvailable() { 
     switch(_libType) {
+#ifdef HAVE_RFID_UART
         case RFID_UART:
             return isIdAvailableUART();
             break;
+#endif
+#ifdef HAVE_RFID_WIEGAND
         case RFID_WIEGAND:
             return isIdAvailableWiegand();
             break;
+#endif
         default: 
             return false;
             break;
     } 
 }
 
+#ifdef HAVE_RFID_WIEGAND
 boolean SeeedRFIDLib::isIdAvailableWiegand() {
     // No ID Available (yet), let's check!
     _idAvailable = false;
@@ -214,7 +226,9 @@ boolean SeeedRFIDLib::isIdAvailableWiegand() {
     
     return _idAvailable;
 }
+#endif
 
+#ifdef HAVE_RFID_UART
 // Check for UART Data
 boolean SeeedRFIDLib::isIdAvailableUART() {
 	/**
@@ -298,4 +312,4 @@ long SeeedRFIDLib::hex2dec(String hexCode) {
   return strtol(buf, NULL, 0);
 }
 
-	
+#endif
